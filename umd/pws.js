@@ -65,6 +65,7 @@ function pws(url, protocols, WebSocket, options) {
     url,
     retries: 0,
     pingTimeout: 'pingTimeout' in options ? options.pingTimeout : false,
+    chadPingPong: chadPingPong in options ? options.chadPingPong : false,
     maxTimeout: options.maxTimeout || 5 * 60 * 1000,
     maxRetries: options.maxRetries || 0,
     nextReconnectDelay: options.nextReconnectDelay || function reconnectTimeout(retries) {
@@ -152,6 +153,7 @@ function pws(url, protocols, WebSocket, options) {
     connection.onclose = onclose
     connection.onopen = onopen
     connection.onmessage = onmessage
+    connection.onpong = onpong
     Object.keys(listenerHandlers).forEach(event => {
       listenerHandlers[event].forEach(handler => connection.addEventListener(event, handler))
     })
@@ -185,11 +187,20 @@ function pws(url, protocols, WebSocket, options) {
     heartbeat()
   }
 
+  function onpong() {
+    heartbeat()
+  }
+
   function heartbeat() {
     if (!pws.pingTimeout)
       return
 
     clearTimeout(heartbeatTimer)
+    heartbeatTimer = setTimeout(pws.chadPingPong ? ping : timedOut, pws.pingTimeout)
+  }
+
+  function ping() {
+    timedOut.ping()
     heartbeatTimer = setTimeout(timedOut, pws.pingTimeout)
   }
 
