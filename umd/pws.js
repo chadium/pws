@@ -65,7 +65,7 @@ function pws(url, protocols, WebSocket, options) {
     url,
     retries: 0,
     pingTimeout: 'pingTimeout' in options ? options.pingTimeout : false,
-    chadPingPong: chadPingPong in options ? options.chadPingPong : false,
+    chadPingPong: 'chadPingPong' in options ? options.chadPingPong : false,
     maxTimeout: options.maxTimeout || 5 * 60 * 1000,
     maxRetries: options.maxRetries || 0,
     nextReconnectDelay: options.nextReconnectDelay || function reconnectTimeout(retries) {
