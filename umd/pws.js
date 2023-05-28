@@ -200,7 +200,7 @@ function pws(url, protocols, WebSocket, options) {
   }
 
   function ping() {
-    timedOut.ping()
+    connection.ping()
     heartbeatTimer = setTimeout(timedOut, pws.pingTimeout)
   }
 
